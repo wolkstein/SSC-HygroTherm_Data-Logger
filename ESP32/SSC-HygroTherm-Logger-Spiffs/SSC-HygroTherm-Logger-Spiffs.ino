@@ -79,7 +79,7 @@ int hg_Mid = 50;
 #define DEB_BTN false
 #define DEB_BME false
 #define DEB_FIR false
-#define DEB_BAT true
+#define DEB_BAT false
 #define DEB_LSL false
 #define DEB_SPIFFS true
 #define DEB_WIFI true
@@ -103,7 +103,7 @@ int batteryLevel = 0;
 // nothing since we use internal clock
 struct tm local;
 
-  
+
 String testvar = "";
 //###################### DISPLAY ################
 #define SDA    4
@@ -139,7 +139,7 @@ int aircondition =0;
 #define NTP_SERVER3 "3.de.pool.ntp.org"
 #define NTP_SERVER4 "ntp.mydomain.com"
 
-#define TZ_INFO "WEST-1DWEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00" 
+#define TZ_INFO "WEST-1DWEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00"
 // Western European Time
 
 
@@ -182,7 +182,7 @@ int aircondition =0;
 // slow loop logger 10 - 60 seconds
 // mid loop BME280 1000ms
 // fast loop Buttons 50ms with delay()
-unsigned long displaytime = 720 * 100;//00;
+unsigned long displaytime = 720 * 100;
 unsigned long lastdisplayt = 0;
 unsigned long slowtime = 60000; // 60 seconds
 unsigned long lastslow = 0;
@@ -260,26 +260,26 @@ void setRTC()
   if(local.tm_year == 70 ){
     if(DEB_WIFI) Serial.println("Hmm?, 1 neuer versuch Hole NTP Zeit");
     configTzTime(TZ_INFO, NTP_SERVER1); // ESP32 Systemzeit mit NTP Synchronisieren
-    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren    
+    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren
   }
   if(local.tm_year == 70 ){
     if(DEB_WIFI) Serial.println("Hmm?, 2 neuer versuch Hole NTP Zeit");
     configTzTime(TZ_INFO, NTP_SERVER2); // ESP32 Systemzeit mit NTP Synchronisieren
-    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren    
+    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren
   }
   if(local.tm_year == 70 ){
     if(DEB_WIFI) Serial.println("Hmm?, 3 neuer versuch Hole NTP Zeit");
     configTzTime(TZ_INFO, NTP_SERVER3); // ESP32 Systemzeit mit NTP Synchronisieren
-    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren    
+    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren
   }
   if(local.tm_year == 70 ){
     if(DEB_WIFI) Serial.println("Hmm?, 4 neuer versuch Hole NTP Zeit");
     configTzTime(TZ_INFO, NTP_SERVER4); // ESP32 Systemzeit mit NTP Synchronisieren
-    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren    
-  }  
+    getLocalTime(&local, 10000);      // Versuche 10 s zu Synchronisieren
+  }
   if(DEB_WIFI) Serial.printf("jahr %04d, monat %02d, tag %02d, %02d:%02d:%02d\n",1900+local.tm_year,1 + local.tm_mon, local.tm_mday , local.tm_hour, local.tm_min , local.tm_sec);
 
-  //rtc.adjust(DateTime(1900+local.tm_year, 1 + local.tm_mon, local.tm_mday , local.tm_hour, local.tm_min , local.tm_sec));// strange? month need +1 
+  //rtc.adjust(DateTime(1900+local.tm_year, 1 + local.tm_mon, local.tm_mday , local.tm_hour, local.tm_min , local.tm_sec));// strange? month need +1
   display.clear();
   display.drawString(10, 30, "Stoppe-Wifi & Bt");
   display.display();
@@ -331,7 +331,7 @@ void setup()
 
   // Init Time
   setRTC();
-  
+
   setenv("TZ", TZ_INFO, 1);
   tzset();
 
@@ -369,7 +369,7 @@ void setup()
       if( DEB_SPIFFS ) listDir(SPIFFS, "/",1);
     }
   }
-  
+
 
   WiFi.mode(WIFI_OFF);
   btStop();
@@ -405,7 +405,7 @@ void loop()
   bool btnIsReleased = getBTNRise();
 
   if(btnIsDownPressed){// button pressed
-    if(DEB_BTN) Serial.println("Internal BTN pressed");  
+    if(DEB_BTN) Serial.println("Internal BTN pressed");
     lastbtnRose = millis();
     selectedDisplay++;
     if(selectedDisplay > 1) selectedDisplay = 0;
@@ -421,7 +421,7 @@ void loop()
     }
     if(DEB_BTN) Serial.printf("btn long rpress time %d\n", millis()- lastbtnRose);
     if(millis()- lastbtnRose > 4000) onServerDisplay = !onServerDisplay;
-    
+
   }
 
   // ######## MIDLOOP ########## 1000 ms
@@ -551,10 +551,10 @@ void serverScreen(){
     display.display();
     upper += 5;
   }
-  
+
   if(DEB_WIFI) Serial.println("");
   if(DEB_WIFI) Serial.print("IP Addresse: ");
-  if(DEB_WIFI) Serial.println(WiFi.localIP()); 
+  if(DEB_WIFI) Serial.println(WiFi.localIP());
   display.clear();
   display.setFont(ArialMT_Plain_16);
   display.drawString(1, 0, "Adresse:");
@@ -562,8 +562,6 @@ void serverScreen(){
   display.drawString(0, 20, url);
   display.display();
 
-  
- // server.begin();
   bool serveon = true;
   String myDFileName = "";
   myDFileName += "/DATA_";
@@ -577,12 +575,12 @@ void serverScreen(){
   myDFileName += "-";
   myDFileName += String(local.tm_min , DEC);
   myDFileName += ".CSV";
-  
+
   while (serveon){
   
-  if(DEB_SERVER) Serial.println("Wait for client");           // print a message out the serial port
+  if(DEB_SERVER) Serial.println("Wait for client");// print a message out the serial port
     WiFiClient client = server.available();   // listen for incoming clients
-  
+
     if (client) {                             // if you get a client,
       if(DEB_SERVER) Serial.println("New Client.");           // print a message out the serial port
       String currentLine = "";                // make a String to hold incoming data from the client
@@ -591,35 +589,35 @@ void serverScreen(){
           char c = client.read();             // read a byte, then
           if(DEB_SERVER) Serial.write(c);     // print it out the serial monitor
           if (c == '\n') {                    // if the byte is a newline character
-  
+
             // if the current line is blank, you got two newline characters in a row.
             // that's the end of the client HTTP request, so send a response:
             if (currentLine.length() == 0) {
               //test
               String allfiles = "";
               getListOfFileNames(SPIFFS, allfiles, "/", 1);
-              
+
               // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
               // and a content-type so the client knows what's coming, then a blank line:
               client.println("HTTP/1.1 200 OK");
               client.println("Content-type:text/html");
-              client.println();  
+              client.println();
               // the content of the HTTP response follows the header:
               //client.print("Click <a href=\"/DATA.CSV\">here</a> Download Logfile.<br>");
-              
+
               client.print("<h2>SSC Daten Logger</h2>");
               client.print(allfiles);
-              
+
               client.print("<form>");
                 client.print("<button formaction="+myDFileName+">Download Logfile</button>");
               client.print("</form>");
               client.print("<form>");
                 client.print("<button formaction=\"/Delete\">Delete Logfile</button>");
-              client.print("</form>");                            
+              client.print("</form>");
               client.print("<form>");
                 client.print("<button formaction=\"/Stop\">Stop Server!</button>");
               client.print("</form>");
-              
+
               // The HTTP response ends with another blank line:
               client.println();
               // break out of the while loop:
@@ -630,11 +628,11 @@ void serverScreen(){
           } else if (c != '\r') {  // if you got anything else but a carriage return character,
             currentLine += c;      // add it to the end of the currentLine
           }
-  
+
           // Check to see if the client request was "GET /H" or "GET /L":
           if (currentLine.endsWith("GET "+ myDFileName +"")) {
             File datafile = SPIFFS.open("/DATA.CSV" , FILE_READ); // Now read data from FS
-            
+
             if (datafile) {
               if (datafile.available()) { // If data is available and present
                 //String dataType = "application/octet-stream";
@@ -642,21 +640,21 @@ void serverScreen(){
                 client.println(); //file end
               }
             }
-            datafile.close(); // close the file:            
+            datafile.close(); // close the file
           }
 
-          
+
           if (currentLine.endsWith("GET /Delete")) {
             //digitalWrite(5, LOW);                // GET /L turns the LED off
             deleteFile(SPIFFS,"/DATA.CSV");
-            
+
           }
           if (currentLine.endsWith("GET /Stop")) {
             client.print("Stoppe den Server und werde wieder ein Hgrometer Daten Logger<br>");
             delay(1000);
             client.stop();
-            serveon = false;               
-          }        
+            serveon = false;
+          }
         }
       }
       // close the connection:
@@ -667,5 +665,5 @@ void serverScreen(){
   WiFi.mode(WIFI_OFF);
   btStop();
   Serial.println("Client Disconnected.");
-  onServerDisplay = false;  
+  onServerDisplay = false;
 }

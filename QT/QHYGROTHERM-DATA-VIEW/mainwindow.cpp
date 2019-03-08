@@ -512,7 +512,7 @@ void MainWindow::on_action_Hilfe_triggered()
     msgBox.setTextFormat(Qt::RichText);   //this is what makes the links clickable
     msgBox.setText("<center>SSC Hygro-Therm Plotter"
                    "<center>copyright 2018 by Michael Wolkstein"
-                   "<center> <a href='https://github.com/wolkstein/SSC-Hygro-Therm-Data-Logger/wiki/Hilfe-Wiki'>Hilfe Wiki</a>");
+				   "<center> <a href='https://github.com/wolkstein/SSC-HygroTherm_Data-Logger/wiki/Hilfe-Wiki'>Hilfe Wiki</a>");
     msgBox.setWindowTitle("Hilfe / Über");
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
