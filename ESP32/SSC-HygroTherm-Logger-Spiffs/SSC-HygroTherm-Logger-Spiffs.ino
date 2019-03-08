@@ -42,7 +42,7 @@
 
 // ############### Libraries ######################
 #include "bitmaps.h"
-#include "RTClib.h"                   // R-T-C lib
+//#include "RTClib.h"                   // R-T-C lib
 #include <Wire.h>
 #include <WiFi.h>
 #include <BME280I2C.h>
@@ -57,6 +57,8 @@
 
 WiFiServer server(80);
 
+#define ADC_PIN 35 //35(adc1_7) 13(adc2_4), 27(adc2_7)
+#define ADC_DIVIDER 645//623.0 adc1_7 , 993.932038835 adc2_4, 772.81 adc1_1
 //###################### PREFERENCES #############
 Preferences preferences;
 int hg_Mid = 50;
@@ -74,10 +76,10 @@ int hg_Mid = 50;
 // if deb rtc is set, we connect every boot to ntp server
 #define DEB_RTC false
 
-#define DEB_BTN true
+#define DEB_BTN false
 #define DEB_BME false
 #define DEB_FIR false
-#define DEB_BAT false
+#define DEB_BAT true
 #define DEB_LSL false
 #define DEB_SPIFFS true
 #define DEB_WIFI true
@@ -292,7 +294,10 @@ void setup()
   pinMode(0,INPUT_PULLUP);
   pinMode(25, OUTPUT);
   Serial.begin(115200);
-
+  
+  adcAttachPin(ADC_PIN);
+  //analogSetClockDiv(9);// ~50ms
+  
   delay(1000);
   Serial.println("");
 
@@ -324,21 +329,8 @@ void setup()
   display.display();
   delay(2000);
 
-  // Init R-T-C
-//  if (! rtc.begin()) {
-//    if(DEB_RTC) Serial.println("Couldn't find RTC");
-//  }
-//  else
-//  {
-//    if(DEB_RTC) Serial.println("Find RTC");
-//  }
-  
+  // Init Time
   setRTC();
-//  if (!rtc.initialized()) {
-//    if(DEB_RTC) Serial.println("RTC is NOT adjusted!");
-//    setRTC();
-//  }
-//  if(DEB_RTC) setRTC(); // we do this every time on init for debug clock
   
   setenv("TZ", TZ_INFO, 1);
   tzset();
@@ -350,8 +342,8 @@ void setup()
     if(DEB_BME) Serial.println("Could not find BME280 sensor!");
     delay(1000);
   }
-
-
+  
+  
   // Fir Filter Set the coefficients
   firHum.setFilterCoeffs(coefAvrHum);
   firBAT_DAC.setFilterCoeffs(coefAvrBAT_DAC);
@@ -360,8 +352,7 @@ void setup()
   if(DEB_FIR) Serial.print("BAT_DAC Gain set: ");
   if(DEB_FIR) Serial.println(firBAT_DAC.getGain());
 
-  adcAttachPin(35);
-  //analogSetClockDiv(9);// ~50ms
+
 
   if(!SPIFFS.begin()){
     if( DEB_SPIFFS ) Serial.println("SPIFFS Mount Failed");
@@ -402,9 +393,9 @@ void loop()
   // 4,05 is 2524, div is 623.0 on adc1 pin 35
   // 4,187 is 2722 , divider is 650.107at default analogSetClockDiv
   // 4,182V is 3090.0 ADC Value. my divider is 738.880918 at analogSetClockDiv(9)
-  int batteryDac = analogRead(35);
+  int batteryDac = analogRead(ADC_PIN);
   int batteryDac_Fir = firBAT_DAC.processReading(batteryDac);
-  lipoVoltage = float(batteryDac_Fir) / 623.0;
+  lipoVoltage = float(batteryDac_Fir) / ADC_DIVIDER ;
   if(DEB_BAT) Serial.printf("Lipo on %d vs. Fir %d read %3.2f V\n",batteryDac, batteryDac_Fir,lipoVoltage);
 
 
@@ -588,6 +579,7 @@ void serverScreen(){
   myDFileName += ".CSV";
   
   while (serveon){
+  
   if(DEB_SERVER) Serial.println("Wait for client");           // print a message out the serial port
     WiFiClient client = server.available();   // listen for incoming clients
   
