@@ -25,7 +25,7 @@ serialDialog::serialDialog(QWidget *parent) :
 	m_statusLabel(new QLabel(tr("Status: wartend."))),
 	m_textEdit(new QTextBrowser()),
 	m_runButton(new QPushButton(tr("Sende Anfrage"))),
-	m_saveButton(new QPushButton(tr("Speichere Daten")))
+	m_saveButton(new QPushButton(tr("Daten speichern")))
 {
 	const auto infos = QSerialPortInfo::availablePorts();
 
