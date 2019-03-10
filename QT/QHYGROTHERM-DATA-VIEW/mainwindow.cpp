@@ -12,6 +12,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "serialDialog.h"
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -257,6 +258,8 @@ void MainWindow::addDataFromFile(){
         if (!filePath.isEmpty())
             loadFile(filePath);
 }
+
+
 
 
 void MainWindow::loadFile(const QString &filePath){
@@ -589,5 +592,12 @@ void MainWindow::on_textEdit_cursorPositionChanged()
     ui->toolButtonUnterstrichen->setChecked(underline);
     ui->toolButtonItalic->setChecked(kursive);
     set_intern_Positon_change( false );
+
+}
+
+void MainWindow::on_actionUSB_Logger_triggered(){
+	 qDebug() << "usb-logger";
+	 mySerialDialog = new serialDialog(this);
+	 mySerialDialog->show();
 
 }

@@ -58,7 +58,7 @@
 WiFiServer server(80);
 
 #define ADC_PIN 35 //35(adc1_7) 13(adc2_4), 27(adc2_7)
-#define ADC_DIVIDER 645//623.0 adc1_7 , 993.932038835 adc2_4, 772.81 adc1_1
+#define ADC_DIVIDER 745.21//623.0 adc1_7 , 993.932038835 adc2_4, 772.81 adc1_1
 //###################### PREFERENCES #############
 Preferences preferences;
 int hg_Mid = 50;
@@ -76,14 +76,15 @@ int hg_Mid = 50;
 // if deb rtc is set, we connect every boot to ntp server
 #define DEB_RTC false
 
+#define DEB_SERIALIN false
 #define DEB_BTN false
 #define DEB_BME false
 #define DEB_FIR false
 #define DEB_BAT false
 #define DEB_LSL false
-#define DEB_SPIFFS true
-#define DEB_WIFI true
-#define DEB_SERVER true
+#define DEB_SPIFFS false
+#define DEB_WIFI false
+#define DEB_SERVER false
 
 bool setupdone = false;
 
@@ -122,6 +123,7 @@ String testvar = "";
 SSD1306  display(0x3c, SDA, SCL, RST);
 
 bool displayIsOn = true;
+bool weSendData = false;
 
 int selectedDisplay = 0; // 0 = main screen, 1 = dawpoint
 bool onServerDisplay = false;
@@ -293,7 +295,9 @@ void setup()
 {
   pinMode(0,INPUT_PULLUP);
   pinMode(25, OUTPUT);
-  Serial.begin(115200);
+  //Serial.begin(115200);
+  Serial.begin(9600);
+  //Serial.begin(57600);
   
   adcAttachPin(ADC_PIN);
   //analogSetClockDiv(9);// ~50ms
@@ -388,6 +392,7 @@ void loop()
 {
   looptime = millis();
   getLocalTime(&local);
+  checkSerialInput();
   // ######## Fast Loop 50ms ###########
   // read battery
   // 4,05 is 2524, div is 623.0 on adc1 pin 35
@@ -490,7 +495,7 @@ void loop()
   }
 
   // ##### display shutoff 5min ########
-  if(!onServerDisplay && displayIsOn && looptime >= lastdisplayt + displaytime ){
+  if(!weSendData && !onServerDisplay && displayIsOn && looptime >= lastdisplayt + displaytime ){
 
     if( DEB_LSL ) Serial.println("Display off");
     display.displayOff();
@@ -523,7 +528,7 @@ void loop()
     }
 
     if( DEB_LSL ) Serial.printf("Enter sleep at %d ms one run need %d ms\n",timenow,timenow-looptime);
-    esp_light_sleep_start();
+    if(!weSendData) esp_light_sleep_start();
   }
 }
 
@@ -666,4 +671,49 @@ void serverScreen(){
   btStop();
   Serial.println("Client Disconnected.");
   onServerDisplay = false;
+}
+
+void checkSerialInput(){
+  
+  //if(DEB_SERIALIN) Serial.println("Jep");
+  // send data only when you receive data:
+  char incomingByte = 0;
+  if (Serial.available() > 0) {
+          // read the incoming byte:
+          incomingByte = Serial.read();
+
+          if(incomingByte == 'D'){
+            weSendData = true;
+            Serial.println("Achtung Logfile wird geloescht!");
+            deleteFile(SPIFFS,"/DATA.CSV");
+            weSendData = false;
+            Serial.println("Das Logfile wurde erfolgreich geloescht.");
+          }
+
+          if(incomingByte == 'G'){
+            weSendData = true;
+            if(DEB_SERIALIN) Serial.println("G is requested");
+            if(DEB_SERIALIN) Serial.print("I received: ");
+            if(DEB_SERIALIN) Serial.println(incomingByte);
+            
+            File file = SPIFFS.open("/DATA.CSV");
+            if(!file){
+               if(DEB_SERIALIN)  Serial.println("Failed to open file for reading");
+                return;
+            }
+        
+           if(DEB_SERIALIN)  Serial.print("Read from file: ");
+            while(file.available()){
+                Serial.write(file.read());
+            }
+            file.close();           
+
+
+            
+            weSendData = false;
+            
+          }
+
+          
+  }  
 }

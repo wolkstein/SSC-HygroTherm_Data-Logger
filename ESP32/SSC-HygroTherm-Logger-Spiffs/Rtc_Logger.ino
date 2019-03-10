@@ -1,5 +1,6 @@
 
 void rtcLogger(float myLoopHum){
+    if(weSendData) return;
 
 
     loggerString = "";

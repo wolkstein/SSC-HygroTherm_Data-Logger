@@ -28,12 +28,14 @@
 
 #include <QMainWindow>
 #include "qcustomplot.h"
+#include "serialDialog.h"
 #include <QFile>
 #include <QTextStream>
 #include <QStandardItemModel>
 //#include "qcpdocumentobject.h"
 #include <QTextCharFormat>
 #include <QTextDocumentWriter>
+
 
 namespace Ui {
 class MainWindow;
@@ -53,6 +55,7 @@ public:
 private slots:
     void addDataFromFile();
     void clearCSVList();
+
     void axisLabelClick(QCPAxis* axis, QCPAxis::SelectablePart part);   
     void legendClick(QCPLegend *legend, QCPAbstractLegendItem* item);
     void on_actionExport_triggered();
@@ -80,8 +83,12 @@ private slots:
 
     void on_textEdit_cursorPositionChanged();
 
+	void on_actionUSB_Logger_triggered();
+
 private:
   Ui::MainWindow *ui;
+
+  serialDialog * mySerialDialog;
 
   QFile my_CSVfile;
 

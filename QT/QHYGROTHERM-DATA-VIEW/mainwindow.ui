@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
-    <height>600</height>
+    <width>1045</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -246,14 +246,15 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1050</width>
-     <height>30</height>
+     <width>1045</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
     <property name="title">
      <string>Da&amp;tei</string>
     </property>
+    <addaction name="actionUSB_Logger"/>
     <addaction name="action_ffne_CSV_Datei"/>
     <addaction name="actionDaten_entfernen"/>
     <addaction name="actionOffnen"/>
@@ -300,6 +301,11 @@
   <action name="actionOffnen">
    <property name="text">
     <string>&amp;Öffnen</string>
+   </property>
+  </action>
+  <action name="actionUSB_Logger">
+   <property name="text">
+    <string>&amp;USB-Logger</string>
    </property>
   </action>
  </widget>

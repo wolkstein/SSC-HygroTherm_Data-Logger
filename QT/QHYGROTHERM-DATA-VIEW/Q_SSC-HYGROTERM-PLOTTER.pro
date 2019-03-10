@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT     += core gui
+QT     += serialport
 CONFIG += static
 
 # uncomment to disable debug output
@@ -19,11 +20,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
         #qcpdocumentobject.cpp \
-        qcustomplot.cpp
+        qcustomplot.cpp \
+    serialDialog.cpp \
+    masterthread.cpp
 
 HEADERS  += mainwindow.h \
          #qcpdocumentobject.h \
-         qcustomplot.h
+         qcustomplot.h \
+    serialDialog.h \
+    masterthread.h
 
 FORMS    += mainwindow.ui
 

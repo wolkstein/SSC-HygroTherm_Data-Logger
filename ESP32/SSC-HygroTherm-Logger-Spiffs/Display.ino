@@ -55,7 +55,7 @@ void tpScreen(){
 //                     +String(mynow.minute())+":"
 //                     +String(mynow.second());
   
-  String strLipoVoltage = "Lipo Volts: " + String(lipoVoltage,2);
+  String strLipoVoltage = "Lipo Volts: " + String(lipoVoltage ,2);
                      
   display.drawString(0, 50, strLipoVoltage);
   display.display(); 
