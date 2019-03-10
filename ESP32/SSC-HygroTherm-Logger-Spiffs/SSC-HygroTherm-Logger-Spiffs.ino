@@ -1,4 +1,3 @@
-
 /*
  *                      ein auf dem Arduino Projekt basierender
  *
@@ -295,8 +294,8 @@ void setup()
 {
   pinMode(0,INPUT_PULLUP);
   pinMode(25, OUTPUT);
-  //Serial.begin(115200);
-  Serial.begin(9600);
+  Serial.begin(115200);
+  //Serial.begin(9600);
   //Serial.begin(57600);
   
   adcAttachPin(ADC_PIN);
@@ -679,41 +678,36 @@ void checkSerialInput(){
   // send data only when you receive data:
   char incomingByte = 0;
   if (Serial.available() > 0) {
-          // read the incoming byte:
-          incomingByte = Serial.read();
+    // read the incoming byte:
+    incomingByte = Serial.read();
 
-          if(incomingByte == 'D'){
-            weSendData = true;
-            Serial.println("Achtung Logfile wird geloescht!");
-            deleteFile(SPIFFS,"/DATA.CSV");
-            weSendData = false;
-            Serial.println("Das Logfile wurde erfolgreich geloescht.");
-          }
+    if(incomingByte == 'D'){
+      weSendData = true;
+      Serial.println("Achtung Logfile wird geloescht!");
+      deleteFile(SPIFFS,"/DATA.CSV");
+      weSendData = false;
+      Serial.println("Das Logfile wurde erfolgreich geloescht.");
+    }
 
-          if(incomingByte == 'G'){
-            weSendData = true;
-            if(DEB_SERIALIN) Serial.println("G is requested");
-            if(DEB_SERIALIN) Serial.print("I received: ");
-            if(DEB_SERIALIN) Serial.println(incomingByte);
-            
-            File file = SPIFFS.open("/DATA.CSV");
-            if(!file){
-               if(DEB_SERIALIN)  Serial.println("Failed to open file for reading");
-                return;
-            }
-        
-           if(DEB_SERIALIN)  Serial.print("Read from file: ");
-            while(file.available()){
-                Serial.write(file.read());
-            }
-            file.close();           
+    if(incomingByte == 'G'){
+      weSendData = true;
+      if(DEB_SERIALIN) Serial.println("G is requested");
+      if(DEB_SERIALIN) Serial.print("I received: ");
+      if(DEB_SERIALIN) Serial.println(incomingByte);
 
+      File file = SPIFFS.open("/DATA.CSV");
+      if(!file){
+         if(DEB_SERIALIN)  Serial.println("Failed to open file for reading");
+          return;
+      }
 
-            
-            weSendData = false;
-            
-          }
-
-          
-  }  
+     if(DEB_SERIALIN)  Serial.print("Read from file: ");
+      while(file.available()){
+          Serial.write(file.read());
+          //delay(2);
+      }
+      file.close();
+      weSendData = false;
+    }
+  }
 }

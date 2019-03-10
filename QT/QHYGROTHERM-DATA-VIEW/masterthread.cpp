@@ -2,6 +2,7 @@
 
 #include <QtSerialPort/QSerialPort>
 #include <QTime>
+#include <QDebug>
 
 MasterThread::MasterThread(QObject *parent) :
 	QThread(parent)
@@ -45,8 +46,9 @@ void MasterThread::run()
 	m_mutex.unlock();
 	QSerialPort serial;
 
+
 	if (currentPortName.isEmpty()) {
-		emit error(tr("No port name specified"));
+		emit error(tr("Kein Verbindung eingestellt"));
 		return;
 	}
 
@@ -56,9 +58,28 @@ void MasterThread::run()
 			serial.setPortName(currentPortName);
 
 			if (!serial.open(QIODevice::ReadWrite)) {
-				emit error(tr("Can't open %1, error code %2")
+				emit error(tr("Kann nicht verbinden %1, Fehler Nr.: %2")
 						   .arg(m_portName).arg(serial.error()));
 				return;
+			}
+			else
+			{
+				//qDebug() << "serial is open";
+
+				if(!serial.setBaudRate(QSerialPort::Baud115200))
+					qDebug()<<serial.errorString();
+
+				if(!serial.setDataBits(QSerialPort::Data8))
+					qDebug()<<serial.errorString();
+
+				if(!serial.setParity(QSerialPort::NoParity))
+					qDebug()<<serial.errorString();
+
+				if(!serial.setStopBits(QSerialPort::OneStop))
+					qDebug()<<serial.errorString();
+
+				if(!serial.setFlowControl(QSerialPort::SoftwareControl))
+					qDebug()<<serial.errorString();
 			}
 		}
 		// write request
@@ -69,7 +90,7 @@ void MasterThread::run()
 			if (serial.waitForReadyRead(currentWaitTimeout)) {
 				QByteArray responseData = serial.readAll();
 				int dlines = 0;
-				while (serial.waitForReadyRead(10)){
+				while (serial.waitForReadyRead(50)){
 					responseData += serial.readAll();
 					dlines++;
 					this->uplstatus(dlines);
