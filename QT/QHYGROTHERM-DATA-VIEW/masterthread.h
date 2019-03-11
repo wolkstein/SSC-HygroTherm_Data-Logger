@@ -30,6 +30,7 @@ private:
 	QMutex m_mutex;
 	QWaitCondition m_cond;
 	bool m_quit = false;
+	bool close_port =false;
 };
 
 #endif // MASTERTHREAD_H

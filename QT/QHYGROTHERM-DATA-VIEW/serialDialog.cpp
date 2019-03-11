@@ -12,6 +12,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QCloseEvent>
 
 serialDialog::serialDialog(QWidget *parent) :
 	QDialog(parent),
@@ -58,6 +59,13 @@ serialDialog::serialDialog(QWidget *parent) :
 	connect(&m_thread, &MasterThread::error, this, &serialDialog::processError);
 	connect(&m_thread, &MasterThread::timeout, this, &serialDialog::processTimeout);
 	connect(&m_thread, &MasterThread::uplstatus, this, &serialDialog::showUplStatus);
+}
+
+
+void serialDialog::closeEvent(QCloseEvent *event){
+	event->ignore();
+	this->hide();
+
 }
 
 void serialDialog::transaction()

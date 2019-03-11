@@ -13,6 +13,7 @@ MasterThread::~MasterThread()
 {
 	m_mutex.lock();
 	m_quit = true;
+	close_port = true;
 	m_cond.wakeOne();
 	m_mutex.unlock();
 	wait();
@@ -51,7 +52,7 @@ void MasterThread::run()
 		emit error(tr("Kein Verbindung eingestellt"));
 		return;
 	}
-
+	if(close_port) serial.close();
 	while (!m_quit) {
 		if (currentPortNameChanged) {
 			serial.close();

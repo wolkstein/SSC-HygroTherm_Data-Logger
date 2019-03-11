@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->comboSize->setCurrentIndex(standardSizes.indexOf(QApplication::font().pointSize()));
   //ui->comboSize->setCurrentText("test");
 
-
+  mySerialDialog = new serialDialog(this);
 
 }
 
@@ -596,8 +596,5 @@ void MainWindow::on_textEdit_cursorPositionChanged()
 }
 
 void MainWindow::on_actionUSB_Logger_triggered(){
-	 qDebug() << "usb-logger";
-	 mySerialDialog = new serialDialog(this);
 	 mySerialDialog->show();
-
 }

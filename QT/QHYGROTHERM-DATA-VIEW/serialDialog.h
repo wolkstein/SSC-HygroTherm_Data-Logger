@@ -28,6 +28,7 @@ private slots:
 	void showUplStatus(const int &line);
 	void processError(const QString &s);
 	void processTimeout(const QString &s);
+	void closeEvent(QCloseEvent *event);
 
 private:
 	void setControlsEnabled(bool enable);
