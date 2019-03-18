@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1045</width>
-    <height>592</height>
+    <width>1077</width>
+    <height>584</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -166,6 +166,26 @@
             </widget>
            </item>
            <item>
+            <widget class="QToolButton" name="toolButtonColor">
+             <property name="toolTip">
+              <string>Text Farbe</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="toolButtonBackColor">
+             <property name="toolTip">
+              <string>Hintergrund Farbe</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QFontComboBox" name="fontComboBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -246,7 +266,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1045</width>
+     <width>1077</width>
      <height>25</height>
     </rect>
    </property>

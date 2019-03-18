@@ -66,6 +66,9 @@ private slots:
     void on_toolButtonUnterstrichen_clicked();
 
     void on_toolButtonItalic_clicked();
+	void on_toolButtonColor_clicked();
+
+	void on_toolButtonBackColor_clicked();
 
     void on_comboSize_currentIndexChanged(const QString &arg1);
 
@@ -105,6 +108,8 @@ private:
 
   void loadFile(const QString& filePath); 
   void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+  void colorChanged(const QColor &c);
+  void backColorChanged(const QColor &c);
 
 };
 

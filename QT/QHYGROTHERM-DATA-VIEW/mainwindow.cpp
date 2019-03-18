@@ -18,6 +18,7 @@
 #include <QMessageBox>
 #include <QTextCodec>
 #include <QTextDocument>
+#include <QColorDialog>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -51,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //  QPalette palette;
 //  palette.setBrush(QPalette::Background, bkgnd);
 //  this->setPalette(palette);
+  ui->textEdit->setAutoFormatting(QTextEdit::AutoBulletList);
   QTextCursor cursor = ui->textEdit->textCursor();
   QTextImageFormat imageFormat;
   imageFormat.setName(":/img/log3.png");
@@ -62,6 +64,12 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->comboSize->addItem(QString::number(size));
   ui->comboSize->setCurrentIndex(standardSizes.indexOf(QApplication::font().pointSize()));
   //ui->comboSize->setCurrentText("test");
+  QPixmap pix(16, 16);
+  pix.fill(Qt::black);
+  ui->toolButtonColor->setIcon(pix);
+  pix.fill(Qt::white);
+  ui->textEdit->setTextBackgroundColor(Qt::white);
+  ui->toolButtonBackColor->setIcon(pix);
 
   mySerialDialog = new serialDialog(this);
 
@@ -446,6 +454,44 @@ void MainWindow::on_fontComboBox_currentIndexChanged(const QString &arg1)
 
 }
 
+void MainWindow::on_toolButtonBackColor_clicked()
+{
+	QColor col = QColorDialog::getColor(ui->textEdit->textBackgroundColor(), this);
+	if (!col.isValid())
+		return;
+	QTextCharFormat fmt;
+	fmt.setBackground(col);
+	mergeFormatOnWordOrSelection(fmt);
+	backColorChanged(col);
+}
+
+void MainWindow::backColorChanged(const QColor &c)
+{
+	QPixmap pix(16, 16);
+	pix.fill(c);
+	ui->toolButtonBackColor->setIcon(pix);
+	//actionTextColor->setIcon(pix);
+}
+
+void MainWindow::on_toolButtonColor_clicked()
+{
+	QColor col = QColorDialog::getColor(ui->textEdit->textColor(), this);
+	if (!col.isValid())
+		return;
+	QTextCharFormat fmt;
+	fmt.setForeground(col);
+	mergeFormatOnWordOrSelection(fmt);
+	colorChanged(col);
+}
+
+void MainWindow::colorChanged(const QColor &c)
+{
+	QPixmap pix(16, 16);
+	pix.fill(c);
+	ui->toolButtonColor->setIcon(pix);
+	//actionTextColor->setIcon(pix);
+}
+
 void MainWindow::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 {
     QTextCursor cursor = ui->textEdit->textCursor();
@@ -582,6 +628,16 @@ void MainWindow::on_textEdit_cursorPositionChanged()
     bool bold = cursor.charFormat().font().bold();
     bool underline = cursor.charFormat().font().underline();
     bool kursive = cursor.charFormat().font().italic();
+	QColor textcoleor = ui->textEdit->textColor();
+	QColor backColor = ui->textEdit->textBackgroundColor();
+	qDebug()<< backColor << " farbe";
+	QPixmap pix(16, 16);
+	pix.fill(textcoleor);
+	ui->toolButtonColor->setIcon(pix);
+	QPixmap pixB(16, 16);
+	pixB.fill(backColor);
+	ui->toolButtonBackColor->setIcon(pixB);
+
 
     qDebug() << "textedit-position :" << cursor.position() << "size: " << textsize <<"bold: " << bold;
 
