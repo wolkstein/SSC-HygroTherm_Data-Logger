@@ -7,7 +7,7 @@
 **           Author: Michael Wolkstein                                    **
 **  Website/Contact: github.com/ssc-hygrothermometer                      **
 **             Date: 25.11.18                                             **
-**          Version: 0.1                                                  **
+**          Version: 0.3                                                  **
 ****************************************************************************/
 
 #include "mainwindow.h"
@@ -561,7 +561,9 @@ void MainWindow::on_action_Hilfe_triggered()
     msgBox.setTextFormat(Qt::RichText);   //this is what makes the links clickable
     msgBox.setText("<center>SSC Hygro-Therm Plotter"
                    "<center>copyright 2018 by Michael Wolkstein"
-				   "<center> <a href='https://github.com/wolkstein/SSC-HygroTherm_Data-Logger/wiki/Hilfe-Wiki'>Hilfe Wiki</a>");
+				   "<center> <a href='https://github.com/wolkstein/SSC-HygroTherm_Data-Logger/wiki/Hilfe-Wiki'>Hilfe Wiki</a>"
+				   "<center>Serielle Schnitstelle Treiber für Windows Rechner"
+				   "<center> <a href='https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers'>Windows Serial Treiber</a>");
     msgBox.setWindowTitle("Hilfe / Über");
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
