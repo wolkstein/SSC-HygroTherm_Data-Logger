@@ -673,15 +673,15 @@ void serverScreen(){
 }
 
 void checkSerialInput(){
-  
+    
   //if(DEB_SERIALIN) Serial.println("Jep");
   // send data only when you receive data:
-  char incomingByte = 0;
+  String incomingByte = "0";
   if (Serial.available() > 0) {
     // read the incoming byte:
-    incomingByte = Serial.read();
+    incomingByte = Serial.readString();
 
-    if(incomingByte == 'D'){
+    if(incomingByte == "D"){
       weSendData = true;
       Serial.println("Achtung Logfile wird geloescht!");
       deleteFile(SPIFFS,"/DATA.CSV");
@@ -689,7 +689,7 @@ void checkSerialInput(){
       Serial.println("Das Logfile wurde erfolgreich geloescht.");
     }
 
-    if(incomingByte == 'G'){
+    if(incomingByte == "G"){
       weSendData = true;
       if(DEB_SERIALIN) Serial.println("G is requested");
       if(DEB_SERIALIN) Serial.print("I received: ");
@@ -709,5 +709,9 @@ void checkSerialInput(){
       file.close();
       weSendData = false;
     }
+    
+    if(incomingByte.startsWith("STD")){
+      Serial.println("Datum Einstellen.");
+    }    
   }
 }
